@@ -3,30 +3,31 @@ package itismeucci.tpsit;
 import java.io.*;
 import java.net.*;
 
+
+
 public class Server {
     public static void main(String[] args) {
         int port = 6789;
         
         try {
             ServerSocket server = new ServerSocket(port);
-            System.out.println("Il server aspetta che il client si connetta sulla porta: " + port);
-            
-            Socket clientSocket = server.accept();
-            
-            System.out.println("Client connesso!");
-            
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            Socket client = server.accept();            
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             
-            String message;
-            
-            while ((message = in.readLine()) != null) {
-                System.out.println("Client: " + message);
-                
-                out.println("Server: la stringa del client e': " + message.toUpperCase());
+            System.out.println("Client connesso sulla porta: " + port);
+
+            String inputStr = in.readLine();
+            if(inputStr != null){
+
+                System.out.println("Stringa ricevuta: " + inputStr);
+                out.println(inputStr.toUpperCase());
             }
 
+            out.close();
+            in.close();
             server.close();
         } catch (IOException e) {
 

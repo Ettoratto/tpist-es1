@@ -8,18 +8,26 @@ public class Client {
         String serverAddress = "localhost";
         int serverPort = 6789;
         
-        try {
-            Socket socket = new Socket(serverAddress, serverPort);
+        try (
+            Socket client = new Socket(serverAddress, serverPort);
             
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
+
+                String userInput;
             
-            out.println("Ciao server!");
+                while((userInput = stdIn.readLine()) != null){
+                    out.println(userInput);
+                    System.out.println("Risposta del server " + in.readLine());
+                }
             
             String response = in.readLine();
-            System.out.println("Server: " + response);
+            System.out.println("Server: " + response); 
 
-            socket.close();
+            in.close();
+            out.close();
+            client.close();
         } catch (IOException e) {
 
         }
